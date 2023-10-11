@@ -6,9 +6,9 @@ In progress boilerplate for building RESTful APIs using NodeJS, Express and Mong
 - TypeScript
 - Express
 - MongoDB (Mongoose)
+- Joi
 - Still not on the current code as of the current commit:
     - CORS
-    - Joi
     - JWT
     - Passport
     - express-session
