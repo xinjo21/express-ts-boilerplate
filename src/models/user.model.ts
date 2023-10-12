@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import TimeLog from "./timelog.model";
 
 const StringRequired = {
@@ -9,11 +9,11 @@ const StringRequired = {
 const userSchema = new mongoose.Schema({
   name: {
     lastName: {
-      StringRequired,
+      ...StringRequired,
       max: 255,
     },
     firstName: {
-      StringRequired,
+      ...StringRequired,
       max: 255,
     },
     middleName: {
@@ -22,16 +22,19 @@ const userSchema = new mongoose.Schema({
     },
   },
   email: {
-    StringRequired,
+    ...StringRequired,
     min: 6,
     lowercase: true,
   },
   password: {
-    StringRequired,
+    ...StringRequired,
     min: 6,
     max: 1024,
   },
-  TimeLog,
+  timelog: {
+    type: Schema.Types.ObjectId,
+    ref: "TimeLog",
+  },
 });
 
 const User = mongoose.model("User", userSchema);

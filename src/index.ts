@@ -1,9 +1,12 @@
 import express, { Express, Request, Response } from "express";
+import mongoose from "mongoose";
 import session from "express-session";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-
 import mongoDBConnection from "./mongoDB.connection";
+
+// Routes import
+import User from "./routes/user.routes";
 
 dotenv.config();
 
@@ -14,7 +17,6 @@ const oneDay = 100 * 60 * 60 * 24;
 mongoDBConnection;
 
 app.use(cookieParser());
-
 if (!process.env.TOKEN_SECRET) {
   process.exit(1);
 }
@@ -26,9 +28,11 @@ app.use(
     cookie: { maxAge: oneDay },
   })
 );
+app.use(express.json());
 
-app.use("/", (req: Request, res: Response) => {
+/* app.use("/", (req: Request, res: Response) => {
   res.send("Server is running smooth");
-});
+}); */
+app.use("/user", User);
 
 app.listen(PORT, () => console.log(`🏃🏻 on port: ${PORT}`));

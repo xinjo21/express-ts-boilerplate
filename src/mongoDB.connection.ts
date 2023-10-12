@@ -9,6 +9,5 @@ if (!process.env.DB_CONNECT) {
   process.exit(1);
 }
 
-export default mongoose
-  .connect(process.env.DB_CONNECT)
-  .then(() => console.log("Connected to the database"));
+export default mongoose.connect(process.env.DB_CONNECT);
+console.log("Connected to the database");
