@@ -41,8 +41,8 @@ export async function getUsers(req: Request, res: Response) {
 // get - revoking access
 export async function logout(req: Request, res: Response) {
   // removing cookie to revoke access
-  req.cookies.destroy();
-
+  res.clearCookie("session");
+  res.clearCookie("id");
   return res.status(200).json({ message: "Success" });
 }
 
