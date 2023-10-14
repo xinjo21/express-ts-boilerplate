@@ -10,9 +10,9 @@ In progress boilerplate for building RESTful APIs using NodeJS, Express and Mong
 - Joi
 - Jwt
 - express-session
+- JWT
 - Still not on the current code as of the current commit:
   - CORS
-  - JWT
   - Passport
 
 ## Future Features

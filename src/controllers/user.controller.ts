@@ -1,7 +1,8 @@
-import { Express, Request, Response } from "express";
-import mongoose from "mongoose";
+import { Request, Response } from "express";
+import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcryptjs";
 import Jwt from "jsonwebtoken";
+import { CREATE, DELETE, GET, GETSPECIFIC, UPDATE } from "./static/methods";
 
 import { loginValidator } from "../middlewares/validation";
 import User from "../models/user.model";
@@ -10,33 +11,20 @@ import User from "../models/user.model";
 export async function getMe(req: Request, res: Response) {
   const id = req.cookies.id;
 
-  try {
-    const data = await User.findById(id);
-    return res.status(200).send(data);
-  } catch (error: any) {
-    return res.status(404).json({ message: error.message });
-  }
+  GETSPECIFIC(req, res, id, User);
 }
 // get a specific user
 export async function getUser(req: Request, res: Response) {
   const id = req.params.id;
 
-  try {
-    const data = await User.findById(id);
-    return res.status(200).send(data);
-  } catch (error: any) {
-    return res.status(404).json({ message: error.message });
-  }
+  GETSPECIFIC(req, res, id, User);
 }
+
 // get and return all user data
 export async function getUsers(req: Request, res: Response) {
   const user = await User.find();
 
-  try {
-    return res.status(200).send(user);
-  } catch (error: any) {
-    return res.status(400).send({ message: error.message });
-  }
+  GET(req, res, user);
 }
 // get - revoking access
 export async function logout(req: Request, res: Response) {
@@ -82,8 +70,6 @@ export async function login(req: Request, res: Response) {
 
 // post - creating an user
 export async function register(req: Request, res: Response) {
-  console.log(req.body);
-
   // checks if email already exists
   const emailExist = await User.findOne({ email: req.body.email });
   if (emailExist)
@@ -103,12 +89,7 @@ export async function register(req: Request, res: Response) {
     password: hashedPassword,
   });
 
-  try {
-    await user.save();
-    return res.status(200).send({ message: "Success" });
-  } catch (error) {
-    return res.status(400).json({ message: "Failed" });
-  }
+  CREATE(req, res, user);
 }
 
 // post - updating an user
@@ -134,7 +115,7 @@ export async function updateUser(req: Request, res: Response) {
     hashedPassword = await bcrypt.hash(req.body.password, salt);
   }
 
-  const updateUser = {
+  const updatedUser = {
     name: {
       lastName: req.body.lastName,
       firstName: req.body.firstName,
@@ -145,22 +126,12 @@ export async function updateUser(req: Request, res: Response) {
     role: req.body.role,
   };
 
-  try {
-    await User.findByIdAndUpdate(id, updateUser, { new: true });
-    return res.status(201).json({ message: "Success" });
-  } catch (error: any) {
-    res.status(404).json({ message: error.message });
-  }
+  UPDATE(req, res, id, updatedUser, User);
 }
 
 // remove - delete user
 export async function deleteUser(req: Request, res: Response) {
   const id = req.params.id;
 
-  try {
-    await User.findByIdAndDelete(id);
-    return res.status(200).send({ message: "Successfully deleted" });
-  } catch (erorr: any) {
-    return res.status(404).json({ message: erorr.message });
-  }
+  DELETE(req, res, id, User);
 }
