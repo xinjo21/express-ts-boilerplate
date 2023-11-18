@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import TimeLog from "./timelog.model";
 
 const StringRequired = {
   type: String,
@@ -32,8 +31,14 @@ const userSchema = new mongoose.Schema({
     max: 1024,
   },
   timelog: {
-    type: Schema.Types.ObjectId,
-    ref: "TimeLog",
+    created_at: {
+      type: Date,
+      required: true,
+    },
+    updated_at: {
+      type: Date,
+      required: true,
+    },
   },
 });
 

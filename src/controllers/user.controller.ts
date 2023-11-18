@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import Jwt from "jsonwebtoken";
-import { CREATE, DELETE, GET, GETSPECIFIC, UPDATE } from "./static/methods";
+import { CREATE, DELETE, GET, GETSPECIFIC, UPDATE } from "./constants/methods";
 
 import { loginValidator } from "../middlewares/validation";
 import User from "../models/user.model";
@@ -73,7 +73,7 @@ export async function register(req: Request, res: Response) {
   // checks if email already exists
   const emailExist = await User.findOne({ email: req.body.email });
   if (emailExist)
-    return res.status(400).send({ message: "Email already exist" });
+    return res.status(400).send({ message: "Email already exist" }); // make this a throw error
 
   // hashing/crypting the password
   const salt = await bcrypt.genSalt(10);
@@ -87,6 +87,10 @@ export async function register(req: Request, res: Response) {
     },
     email: req.body.email,
     password: hashedPassword,
+    timelog: {
+      created_at: new Date().getTime(),
+      updated_at: new Date().getTime(),
+    },
   });
 
   CREATE(req, res, user);
@@ -105,12 +109,12 @@ export async function updateUser(req: Request, res: Response) {
   const user = await User.findOne({ email: req.body.email });
   if (!user) return res.status(400).send({ message: "No user found" });
   // Check password first
+
   const prevPassword = await bcrypt.compare(req.body.password, user.password);
   if (!prevPassword)
     return res.status(400).send({ message: "Incorrect password" });
-
   // if there is a new password, hashing
-  if (req.body.password) {
+  if (req.body.new_password) {
     const salt = await bcrypt.genSalt(10);
     hashedPassword = await bcrypt.hash(req.body.password, salt);
   }
@@ -124,6 +128,10 @@ export async function updateUser(req: Request, res: Response) {
     email: req.body.email,
     password: hashedPassword,
     role: req.body.role,
+    timelog: {
+      created_at: user.timelog?.created_at,
+      updated_at: new Date().getTime(),
+    },
   };
 
   UPDATE(req, res, id, updatedUser, User);

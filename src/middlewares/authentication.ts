@@ -10,8 +10,8 @@ export function VerifyUserToken(
   const token = req.header("Authorization");
   const sessionToken = req.cookies.session;
 
-  if (!token) return res.status(401).send("Access Denied");
-  if (!sessionToken) return res.status(401).send("Access Denied");
+  if (!token) return res.status(401).send("Access Denied: No Authorization Header");
+  if (!sessionToken) return res.status(401).send("Access Denied: No Cookies");
 
   if (!process.env.TOKEN_SECRET) {
     process.exit(1);

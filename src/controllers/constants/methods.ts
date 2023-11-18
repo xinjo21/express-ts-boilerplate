@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import mongoose from "mongoose";
 
 /* 
 
@@ -19,9 +20,13 @@ export async function GET(req: Request, res: Response, data: Object) {
 export async function GETSPECIFIC(
   req: Request,
   res: Response,
-  id: String,
+  id: string,
   Schema: any
 ) {
+  // Check if ID is valid
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return res.status(404).send(`No post with that ID: ${id}`);
+
   try {
     const data = await Schema.findById(id);
     return res.status(200).send(data);
@@ -44,12 +49,16 @@ export async function CREATE(req: Request, res: Response, data: any) {
 export async function UPDATE(
   req: Request,
   res: Response,
-  id: String,
+  id: string,
   data: Object,
   Schema: any
 ) {
+  // Check if ID is valid
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return res.status(404).send(`No post with that ID: ${id}`);
+
   try {
-    await Schema.findByIdAndUpdate(id, data, { new: true });
+    await Schema.findByIdAndUpdate(id, data);
     return res.status(201).json({ message: "Success" });
   } catch (error: any) {
     res.status(404).json({ message: error.message });
@@ -60,9 +69,13 @@ export async function UPDATE(
 export async function DELETE(
   req: Request,
   res: Response,
-  id: String,
+  id: string,
   Schema: any
 ) {
+  // Check if ID is valid
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return res.status(404).send(`No post with that ID: ${id}`);
+
   try {
     await Schema.findByIdAndDelete(id);
     return res.status(200).send({ message: "Successfully deleted" });

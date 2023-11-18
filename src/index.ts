@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import session from "express-session";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import mongoDBConnection from "./mongoDB.connection";
+import MongoDB_Connection from "./config/mongoDB.connection";
 
 // Routes import
 import User from "./routes/user.routes";
@@ -14,7 +14,7 @@ const app: Express = express();
 const PORT = process.env.PORT;
 const oneDay = 100 * 60 * 60 * 24;
 
-mongoDBConnection;
+MongoDB_Connection()
 
 app.use(cookieParser());
 if (!process.env.TOKEN_SECRET) {
